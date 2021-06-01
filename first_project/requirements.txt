@@ -1,5 +1,3 @@
 pre-commit
 numpy
-# what if I added some pointless text here.
-# And another line. Idiot.
-# Doh. I should probabably clean this up. Next time.
+matplotlib
