@@ -1,3 +1,4 @@
+# Requirements for the project
 pre-commit
 numpy
 matplotlib
