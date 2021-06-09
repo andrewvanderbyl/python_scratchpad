@@ -1,4 +1,4 @@
-A README for the DSP Signal Averager.
+# DSP Signal Averager.
 The idea with this simple piece of code is to implement signal averaging.
 We will input a CW tone and drown it in white noise. The process is repeated
 and each iteration summed. Provided the phase of the CW remain constant and the

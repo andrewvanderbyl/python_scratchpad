@@ -9,7 +9,7 @@ def generate_carrier_wave(
     sampling_frequency: int,
     num_samples: int,
     noise_scale: float,
-    complex: bool,  # noqa: E501
+    complex: bool,
 ) -> np.ndarray:
     """Generate a carrier wave vector.
 
@@ -26,12 +26,12 @@ def generate_carrier_wave(
     noise_scale: float
         Factor to scale generated noise.
     complex: bool
-        Specify if realor complex carrier wave is required.
+        Specify if real or complex carrier wave is required.
 
     Returns
     -------
     np.ndarray of type float
-        Output array of complex-valued samples for generated CW.
+        Complex-valued samples for generated CW.
     """
     samples_per_cycle = sampling_frequency / freq
     cycles = int((num_samples) / samples_per_cycle)

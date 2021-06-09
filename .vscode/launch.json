@@ -8,7 +8,7 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/SigAverager/testing/test_dsp_signal_averager.py",
+            "program": "${workspaceFolder}/SigAverager/testing/test_dsp_signal_averager_decorator.py",
             "console": "integratedTerminal"
         }
     ]

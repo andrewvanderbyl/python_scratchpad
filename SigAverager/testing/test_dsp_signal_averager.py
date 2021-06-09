@@ -11,7 +11,6 @@ def test_signal_averaging():
 
     Test Overview:
     --------------
-    This test will pass parametets to signal averaging method and get back a vector.
     The intention is to check for the correct averaging. The SNR should improve with the number of iterations.
     The test CW tone is 75MHz (EE3:75).
     The test will look for the following:
