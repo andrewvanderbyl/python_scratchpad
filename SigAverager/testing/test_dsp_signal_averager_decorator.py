@@ -43,7 +43,7 @@ def test_signal_averaging():
 
     # Compute Averaged Signal
     averaged_signal = signal_averager_decorator.signal_averager(
-        cw_scale, cw_freq, sampling_frequency, noise_scale, num_samples
+        np.zeros(num_samples), cw_scale, cw_freq, sampling_frequency, noise_scale, num_samples
     )
 
     # Compute real FFT on average signal

@@ -16,10 +16,12 @@ def n_iterations(n):
 
     def inner(f):
         def wrapper(*args, **kwargs):
-            rv = np.zeros(args[4])
+            rv = np.zeros(args[5])
             for i in range(n):
                 print(f"Running {f.__name__}:{i}")
-                rv = f(rv, *args, **kwargs)
+                args = list(args)
+                args[0] = rv
+                rv = f(*args, **kwargs)
             return rv
 
         return wrapper
