@@ -9,7 +9,7 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/SigAverager/testing/test_dsp_signal_averager_decorator.py",
+            "program": "${workspaceFolder}/LucasNumber/testing/test_lucas_number.py",
             "console": "integratedTerminal"
         }
     ]
