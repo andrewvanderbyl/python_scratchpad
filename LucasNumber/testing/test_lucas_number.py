@@ -42,12 +42,7 @@ def test_lucas_number_generator():
 
     # Iterate through the generated sequence and compare to the expected sequence.
     for i in range(len(expected_lucas_sequence)):
-        if generated_sequence[i][0] == expected_lucas_sequence[i]:
-            test = True
-        else:
-            test = False
-            break
-    assert test
+        assert generated_sequence[i][0] == expected_lucas_sequence[i]
 
 
 """ Debug: Uncomment to run individual methods"""
