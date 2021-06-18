@@ -22,14 +22,6 @@ import asyncio
 import aio_pika
 
 
-# construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-r", "--role", type=str, required=True, help="Role to play. Options are 'start' or 'listen'")
-ap.add_argument("-e", "--exchange", type=str, default="", help="RabbitMQ broker")
-ap.add_argument("-d", "--delay", type=int, default=3, help="# response delay")
-args = vars(ap.parse_args())
-
-
 async def createConnection(Queue, routing_key, loop):
     """
     Create RabbitMQ Connection.
@@ -336,6 +328,13 @@ async def main(loop):
 
 
 if __name__ == "__main__":
+    # construct the argument parser and parse the arguments
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-r", "--role", type=str, required=True, help="Role to play. Options are 'start' or 'listen'")
+    ap.add_argument("-e", "--exchange", type=str, default="", help="RabbitMQ broker")
+    ap.add_argument("-d", "--delay", type=int, default=3, help="# response delay")
+    args = vars(ap.parse_args())
+
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(loop))
     loop.close()
