@@ -86,7 +86,7 @@ async def closeConnection(connection):
     await connection.close()
 
 
-async def RMQPublish(connection, channel, routing_key, Msg, MsgIdx):
+async def _RMQPublish(connection, channel, routing_key, Msg, MsgIdx):
     """
     Rabbitmq Publish.
 
@@ -115,7 +115,7 @@ async def RMQPublish(connection, channel, routing_key, Msg, MsgIdx):
     return res
 
 
-async def RMQConsume(connection, channel, queue, routing_key):
+async def _RMQConsume(connection, channel, queue, routing_key):
     """
     Rabbitmq Consume.
 
@@ -176,28 +176,33 @@ async def TalkRole(connection, channel, queue, routing_key, TalkMsg, idx, respon
         Time in seconds to delay responding. This is only to make the interactions easier to follow.
 
     Return:
-        None
+    comms_msg: list[string]
+        List of transactional messages for this round
     """
     Node = "Node1"
 
     Listen = False
+    comms_msg = []
 
-    task_Talk = asyncio.create_task(RMQPublish(connection, channel, routing_key[0], TalkMsg, idx))
+    task_Talk = asyncio.create_task(_RMQPublish(connection, channel, routing_key[0], TalkMsg, idx))
     res_talk = await asyncio.gather(task_Talk)
 
     if res_talk is not None:
         print("\033[1;32;40m" + Node + ":" + TalkMsg[idx])
         Listen = True
+        comms_msg.append(TalkMsg[idx])
 
     while Listen:
-        task_ListenRole = asyncio.create_task(RMQConsume(connection, channel, queue[1], routing_key[1]))
-        task_twiddlethumbs = asyncio.create_task(twiddlethumbs())
+        task_ListenRole = asyncio.create_task(_RMQConsume(connection, channel, queue[1], routing_key[1]))
+        task_twiddlethumbs = asyncio.create_task(_twiddlethumbs())
         res_listen = await asyncio.gather(task_ListenRole, task_twiddlethumbs)
+        comms_msg.append(res_listen[0])
 
         if res_listen[0] is not None:
             print("\033[1;31;40m" + Node + ":(Msg from Node2): " + res_listen[0])
             Listen = False
             break
+    return comms_msg
 
 
 async def ListenRole(connection, channel, queue, routing_key, ReplyMsg, idx, response_delay):
@@ -233,25 +238,30 @@ async def ListenRole(connection, channel, queue, routing_key, ReplyMsg, idx, res
     Node = "Node2"
 
     Listening = True
+    comms_msg = []
 
     while Listening:
-        task_ListenRole = asyncio.create_task(RMQConsume(connection, channel, queue[0], routing_key[0]))
-        task_twiddlethumbs = asyncio.create_task(twiddlethumbs())
+        task_ListenRole = asyncio.create_task(_RMQConsume(connection, channel, queue[0], routing_key[0]))
+        task_twiddlethumbs = asyncio.create_task(_twiddlethumbs())
         res_listen = await asyncio.gather(task_ListenRole, task_twiddlethumbs)
+        comms_msg.append(res_listen[0])
 
         if res_listen[0] is not None:
             print(Node + ":(Msg from Node1): " + res_listen[0])
             Listening = False
             break
 
-    task_TalkRole = asyncio.create_task(RMQPublish(connection, channel, routing_key[1], ReplyMsg, idx))
+    task_TalkRole = asyncio.create_task(_RMQPublish(connection, channel, routing_key[1], ReplyMsg, idx))
     res_talk = await asyncio.gather(task_TalkRole)
     if res_talk[0] is not None:
         print(Node + ":" + ReplyMsg[idx])
         Listening = True
+        comms_msg.append(ReplyMsg[idx])
+
+    return comms_msg
 
 
-async def other():
+async def _other():
     """
     Other as a separate task.
 
@@ -264,7 +274,7 @@ async def other():
     print("Yay, I'm doing something else!")
 
 
-async def twiddlethumbs():
+async def _twiddlethumbs():
     """
     Twiddle Thumbs as a separate task.
 
@@ -311,14 +321,14 @@ async def main(loop):
             task_Start = asyncio.create_task(
                 TalkRole(connection, channel, queue, routing_key, TalkMsg, idx, response_delay)
             )
-            task_other = asyncio.create_task(other())
+            task_other = asyncio.create_task(_other())
             await asyncio.gather(task_Start, task_other)
 
         elif args["role"].lower() == "listen":
             task_Listen = asyncio.create_task(
                 ListenRole(connection, channel, queue, routing_key, ReplyMsg, idx, response_delay)
             )
-            task_other = asyncio.create_task(other())
+            task_other = asyncio.create_task(_other())
             await asyncio.gather(task_Listen, task_other)
         else:
             print("Please enter a role. Options 1) 'start'; 2) 'listen'. ")
