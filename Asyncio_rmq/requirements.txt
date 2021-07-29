@@ -1,0 +1,5 @@
+numpy
+argparse
+os
+asyncio
+aio_pika
